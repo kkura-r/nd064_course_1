@@ -1,6 +1,9 @@
 name: "TechTrends - Package with Docker"
 
-on: [main]
+on:
+  push:
+    branches:
+      - 'main'
 
 jobs:
   build:
