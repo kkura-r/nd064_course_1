@@ -38,9 +38,9 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-      return render_template('404.html'), 404
+        return render_template('404.html'), 404
     else:
-      return render_template('post.html', post=post)
+        return render_template('post.html', post=post)
 
 # Define the About Us page
 @app.route('/about')
@@ -100,6 +100,6 @@ def metrics():
 
 # start the application on port 3111
 if __name__ == "__main__":
-   # Total amount of connections to the database
-   total_db_connection_count = 0
-   app.run(host='0.0.0.0', port='3111')
+    # Total amount of connections to the database
+    total_db_connection_count = 0
+    app.run(host='0.0.0.0', port='3111')
