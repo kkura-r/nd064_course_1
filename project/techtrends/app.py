@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
@@ -38,13 +39,16 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
+        app.logger.debug('Article not found!')
         return render_template('404.html'), 404
     else:
+        app.logger.debug('Article "{}" retrieved!'.format(post['title']))
         return render_template('post.html', post=post)
 
 # Define the About Us page
 @app.route('/about')
 def about():
+    app.logger.debug('"About us" retrieved!')
     return render_template('about.html')
 
 # Define the post creation functionality 
@@ -63,6 +67,7 @@ def create():
             connection.commit()
             connection.close()
 
+            app.logger.debug(f'New article "{title}" posted!')
             return redirect(url_for('index'))
 
     return render_template('create.html')
@@ -100,6 +105,13 @@ def metrics():
 
 # start the application on port 3111
 if __name__ == "__main__":
+    # Logging config
+    logging.basicConfig(
+        level=logging.DEBUG,
+        style='{',
+        format='{levelname:4}:{name}:{asctime}, {message}',
+        datefmt='%m/%d/%Y, %H:%M:%S'
+    )
     # Total amount of connections to the database
     total_db_connection_count = 0
     app.run(host='0.0.0.0', port='3111')
