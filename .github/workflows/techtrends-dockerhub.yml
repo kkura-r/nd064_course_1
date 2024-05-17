@@ -1,0 +1,17 @@
+name: "TechTrends - Package with Docker"
+
+on: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the image
+      run: |
+        docker build -t techtrends:latest .
+    - name: Push the latest image to DockerHub
+      run: |
+        docker login -u kkurar -p ${{ secrets.DOCKERHUB_TOKEN }}
+        docker tag techtrends:latest kkurar/techtrends/:latest
+        docker push kkurar/techtrends:latest
