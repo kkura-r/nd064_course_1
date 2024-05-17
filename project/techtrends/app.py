@@ -6,8 +6,10 @@ from werkzeug.exceptions import abort
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
 def get_db_connection():
+    global total_db_connection_count
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
+    total_db_connection_count += 1
     return connection
 
 # Function to get a post using its ID
@@ -65,6 +67,39 @@ def create():
 
     return render_template('create.html')
 
+# Define the health check response
+@app.route("/healthz")
+def healthz():
+    response = app.response_class(
+        response=json.dumps({'result': 'OK - healthy'}),
+        status=200,
+        mimetype='application/json',
+    )
+    return response
+
+# Define the metrics response.
+#   * db_connection_count: Total amount of conntectons to the database
+#   * post_count: Total amount of posts
+@app.route("/metrics")
+def metrics():
+    connection = get_db_connection()
+    post_count = len(
+        connection.execute('SELECT title FROM posts').fetchall()
+    )
+    connection.close()
+
+    response = app.response_class(
+        response=json.dumps({
+            'db_connection_count': total_db_connection_count,
+            'post_count': post_count,
+        }),
+        status=200,
+        mimetype='application/json',
+    )
+    return response
+
 # start the application on port 3111
 if __name__ == "__main__":
+   # Total amount of connections to the database
+   total_db_connection_count = 0
    app.run(host='0.0.0.0', port='3111')
