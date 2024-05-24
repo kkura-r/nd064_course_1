@@ -1,5 +1,6 @@
 import logging
 import sqlite3
+import sys
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
@@ -110,7 +111,8 @@ if __name__ == "__main__":
         level=logging.DEBUG,
         style='{',
         format='{levelname:4}:{name}:{asctime}, {message}',
-        datefmt='%m/%d/%Y, %H:%M:%S'
+        datefmt='%m/%d/%Y, %H:%M:%S',
+        stream=sys.stdout
     )
     # Total amount of connections to the database
     total_db_connection_count = 0
